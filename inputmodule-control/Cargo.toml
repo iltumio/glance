@@ -1,0 +1,28 @@
+[package]
+edition = "2021"
+name = "inputmodule-control"
+version = "0.2.0"
+rust-version = "1.95"
+license = "MIT"
+
+[dependencies]
+inputmodule-host = { workspace = true, features = ["cli"] }
+clap = { version = "4.3", features = ["derive"] }
+serialport = "4.2.1"
+
+# For ledmatrix
+chrono = "0.4.26"
+image = { version = "0.24.6", default-features = false, features = [
+    "ico",
+    "gif",
+] }
+rand = "0.8.5"
+
+# For audio visualizations
+# Depending on an experimental crate, therefore optional dependency
+vis-core = { git = 'https://github.com/Rahix/visualizer2.git', rev = '1fe908012a9c156695921f3b6bb47178e1332b92', optional = true }
+[features]
+audio-visualizations = ["vis-core"]
+
+[build-dependencies]
+static_vcruntime = "2.0"

@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "canvas": { "width": 9, "height": 34 },
+  "widgets": [
+    { "kind": "seven_segment_clock", "x": 1, "y": 0 },
+    { "kind": "system_monitor", "x": 0, "y": 11 },
+    { "kind": "equalizer", "x": 0, "y": 23 }
+  ]
+}

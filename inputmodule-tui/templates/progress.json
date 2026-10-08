@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "canvas": { "width": 9, "height": 34 },
+  "widgets": [
+    {
+      "kind": "progress_bar", "name": "download", "x": 0, "y": 0,
+      "progress": { "orientation": "horizontal", "length": 9, "width": 2, "min": 0, "max": 100, "value": 0, "reverse": false },
+      "input": { "type": "api" }
+    },
+    {
+      "kind": "progress_bar", "name": "build", "x": 0, "y": 5,
+      "progress": { "orientation": "vertical", "length": 24, "width": 2, "min": 0, "max": 100, "value": 0, "reverse": false },
+      "input": {
+        "type": "file", "path": "progress-data.json", "interval_ms": 1000,
+        "mask": { "type": "json_pointer", "pointer": "/build/percent" }
+      }
+    },
+    {
+      "kind": "progress_bar", "name": "tests", "x": 4, "y": 5,
+      "progress": { "orientation": "vertical", "length": 24, "width": 2, "min": 0, "max": 100, "value": 0, "reverse": false },
+      "input": { "type": "api" }
+    }
+  ]
+}

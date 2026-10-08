@@ -1,0 +1,8 @@
+[workspace]
+resolver = "2"
+members = ["inputmodule-tui", "inputmodule-control", "inputmodule-host"]
+default-members = ["inputmodule-tui"]
+
+[workspace.dependencies]
+# Temporarily bundled shared library; replace here with a pinned Git dependency when published.
+inputmodule-host = { path = "inputmodule-host" }

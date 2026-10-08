@@ -1,0 +1,13 @@
+[package]
+name = "inputmodule-host"
+version = "0.1.0"
+rust-version = "1.95"
+license = "MIT"
+edition = "2021"
+description = "Shared host-side protocol and LED Matrix rendering"
+
+[dependencies]
+clap = { version = "4.3", features = ["derive"], optional = true }
+
+[features]
+cli = ["dep:clap"]

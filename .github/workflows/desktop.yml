@@ -1,0 +1,57 @@
+name: Glance desktop applications
+
+on:
+  push:
+    branches: [main, 'dev-*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_NET_GIT_FETCH_WITH_CLI: true
+
+jobs:
+  desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Install Linux serial dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libudev-dev
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Lint applications and shared library
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Test applications and shared library
+        run: cargo test --locked --workspace
+      - name: Build desktop applications
+        run: cargo build --locked --release --workspace
+      - name: Check CLI without a terminal
+        run: cargo run --locked -p inputmodule-tui -- --help
+      - name: Linux integration checks
+        if: runner.os == 'Linux'
+        run: |
+          python3 inputmodule-tui/tests/terminal_smoke.py target/release/inputmodule-tui
+          python3 inputmodule-tui/tests/serial_smoke.py target/release/inputmodule-tui
+          python3 inputmodule-tui/tests/composer_smoke.py target/release/inputmodule-tui
+          python3 inputmodule-tui/tests/inputs_smoke.py target/release/inputmodule-tui
+      - uses: actions/upload-artifact@v4
+        with:
+          name: glance-${{ runner.os }}
+          if-no-files-found: error
+          path: |
+            target/release/inputmodule-tui
+            target/release/inputmodule-tui.exe
+            target/release/inputmodule-control
+            target/release/inputmodule-control.exe

@@ -1,0 +1,19 @@
+[env]
+TARGET_TRIPLE = "${CARGO_MAKE_RUST_TARGET_TRIPLE}"
+CARGO_MAKE_EXTEND_WORKSPACE_MAKEFILE = true
+
+[tasks.build]
+command = "cargo"
+args = ["build", "--locked", "--workspace"]
+
+[tasks.build-release]
+command = "cargo"
+args = ["build", "--locked", "--release", "--workspace"]
+
+[tasks.test]
+command = "cargo"
+args = ["test", "--locked", "--workspace"]
+
+[tasks.clippy]
+command = "cargo"
+args = ["clippy", "--locked", "--workspace", "--all-targets", "--", "-Dwarnings"]
