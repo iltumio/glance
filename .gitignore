@@ -4,3 +4,5 @@
 *.rs.bk
 /.vscode/
 /layout.json
+# Original demo video; the README uses the optimized GIF.
+/assets/glance-usage.mp4

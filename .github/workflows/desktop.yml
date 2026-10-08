@@ -1,8 +1,7 @@
-name: Glance desktop applications
+name: Build
 
 on:
   push:
-    branches: [main, 'dev-*']
   pull_request:
   workflow_dispatch:
 
@@ -15,6 +14,7 @@ env:
 
 jobs:
   desktop:
+    name: Build (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
@@ -38,7 +38,14 @@ jobs:
       - name: Build desktop applications
         run: cargo build --locked --release --workspace
       - name: Check CLI without a terminal
-        run: cargo run --locked -p inputmodule-tui -- --help
+        run: cargo run --locked --release -p inputmodule-tui -- --help
+      - name: Check source installer
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          ./install.sh --prefix "$RUNNER_TEMP/glance-install"
+          "$RUNNER_TEMP/glance-install/bin/inputmodule-tui" --help
+          "$RUNNER_TEMP/glance-install/bin/inputmodule-control" --help
       - name: Linux integration checks
         if: runner.os == 'Linux'
         run: |

@@ -1,7 +1,12 @@
-# Glance
+<h1 align="center">Glance</h1>
 
 <p align="center">
   <img src="assets/glance-logo.png" alt="Glance logo: a G made of LED dots with a mint-green accent" width="320">
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License"></a>
+  <a href="https://github.com/iltumio/glance/actions/workflows/desktop.yml"><img src="https://github.com/iltumio/glance/actions/workflows/desktop.yml/badge.svg?branch=main" alt="Build status"></a>
 </p>
 
 Glance composes widgets on a Framework Laptop 16 LED Matrix. Preview the 9×34
@@ -13,11 +18,30 @@ seven-segment clock), computer CPU/RAM statistics, equalizer, breathing, WPM and
 configurable progress bars. Progress bars consume values from periodically read
 files with JSON Pointer/regex masks, or from one shared Axum JSON-RPC server.
 
+![Glance usage demo: terminal widget editor and Framework LED Matrix](assets/glance-usage.gif)
+
 ## Getting started
 
 Install Rust 1.95 or newer, [just](https://github.com/casey/just), and your system's
 serial dependencies (`libudev-dev` on Ubuntu; `libudev` and `pkg-config` on Arch).
 This workspace builds directly for your computer's native target.
+
+### Install on Linux or macOS
+
+The installer builds from source and installs `inputmodule-tui` and
+`inputmodule-control` into `~/.local/bin`. Rust and the dependencies above must
+already be installed; macOS also needs the Xcode Command Line Tools.
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/iltumio/glance/main/install.sh | bash
+inputmodule-tui --no-device
+```
+
+From a local checkout, run `./install.sh`. Choose another installation prefix with
+`./install.sh --prefix /path/to/prefix`; executables go into its `bin` directory.
+The installer prints a PATH command if that directory is not already on your PATH.
+
+### Run from a checkout
 
 ```sh
 just demo
@@ -56,32 +80,13 @@ sudo install -m 0644 release/50-framework-inputmodule.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 ```
 
-## Workspace and original library
+## Workspace
 
 | Crate | Responsibility |
 | --- | --- |
 | `inputmodule-tui` | Widget editor, rendering, JSON templates, inputs, JSON-RPC server and device connection |
 | `inputmodule-control` | Hardware control CLI |
 | `inputmodule-host` | Shared protocol constants/encoding, monochrome grid and fonts |
-
-The project was extracted from our working copy of
-[FrameworkComputer/inputmodule-rs](https://github.com/FrameworkComputer/inputmodule-rs),
-based on commit `4871f4ad71d64189bfafebae3a13e5a517cf3787` plus the local Rust
-widget/editor improvements. Source files for both applications and the shared
-library were preserved during extraction. The original repository remains intact.
-
-`inputmodule-host` is temporarily included because this lightweight crate is not
-yet published in the upstream repository. A fresh clone of Glance has everything
-needed to build. The desktop crates reference this library through
-`[workspace.dependencies]` in the root Cargo.toml. Once a repository publishes
-that crate, the dependency can be replaced there with a pinned Git dependency;
-application source imports remain the same. At that point, remove the bundled
-crate from workspace members and remove its directory.
-
-The workspace contains desktop applications and this shared library. It has no
-RP2040 firmware crates or embedded-target configuration. Optional audio
-visualizations in the control CLI retain their original feature flag and Git
-revision.
 
 ## Verification
 
@@ -94,7 +99,22 @@ just smoke
 smoke suites exercise real terminal lifecycle, editor configuration/save/load,
 file polling, the HTTP JSON-RPC endpoint, simulated serial output, signal shutdown
 and reconnects. CI runs desktop checks on Linux, Windows and macOS, with integration
-checks on Linux.
+checks on Linux. The [Build workflow](https://github.com/iltumio/glance/actions/workflows/desktop.yml)
+runs on every push and pull request, and can also be started manually. Each run
+provides downloadable release binaries for Linux, Windows and macOS.
+
+## Acknowledgements
+
+Thanks to Framework and the contributors to
+[FrameworkComputer/inputmodule-rs](https://github.com/FrameworkComputer/inputmodule-rs)
+for making their Input Module software and firmware available under the
+[MIT License](https://github.com/FrameworkComputer/inputmodule-rs/blob/main/LICENSE).
+Their work provides the foundation for Glance's device support.
+
+`inputmodule-host` bundles shared code extracted and adapted from that repository,
+including protocol constants and encoding, monochrome frames and fonts. We include
+it locally because upstream does not provide a dedicated reusable Rust crate for
+host applications.
 
 Glance is licensed under the [MIT License](LICENSE). The original Framework
 copyright notice is retained.
